@@ -1,6 +1,23 @@
+import { useContext, useRef } from 'react';
 import './login.css';
+import { loginCall } from '../../apiCalls';
+import { AuthContext } from '../../context/AuthContext';
+import { CircularProgress } from '@material-ui/core';
 
 const Login = () => {
+  const email = useRef();
+  const password = useRef();
+  const { dispatch, isFetching } = useContext(AuthContext);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const userCredential = {
+      email: email.current.value,
+      password: password.current.value,
+    };
+    loginCall(userCredential, dispatch);
+  };
+
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -11,15 +28,34 @@ const Login = () => {
           </span>
         </div>
         <div className="loginRight">
-          <div className="loginBox">
-            <input placeholder="Email" className="loginInput" />
-            <input placeholder="Password" className="loginInput" />
-            <button className="loginButton">Log in</button>
+          <form className="loginBox" onSubmit={submitHandler}>
+            <input
+              placeholder="Email"
+              type="email"
+              className="loginInput"
+              ref={email}
+              required
+            />
+            <input
+              placeholder="Password"
+              type="password"
+              className="loginInput"
+              ref={password}
+              required
+              minLength="6"
+            />
+            <button className="loginButton" type="submit" disabled={isFetching}>
+              {isFetching ? <CircularProgress color="white" /> : 'Log In'}
+            </button>
             <span className="loginForget">Forgot Password?</span>
             <button className="loginRegisterButton">
-              Create a Nwe Account
+              {isFetching ? (
+                <CircularProgress color="white" />
+              ) : (
+                'Create a New Account'
+              )}
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
