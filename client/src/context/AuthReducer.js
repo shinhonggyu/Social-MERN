@@ -23,6 +23,28 @@ const AuthReducer = (state, action) => {
     };
   }
 
+  if (action.type === 'FOLLOW') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        followings: [...state.user.followings, action.payload],
+      },
+    };
+  }
+
+  if (action.type === 'UNFOLLOW') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        followings: state.user.followings.filter(
+          (following) => following !== action.payload
+        ),
+      },
+    };
+  }
+
   return state;
 };
 
